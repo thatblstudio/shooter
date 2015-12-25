@@ -15,6 +15,7 @@ function GamePlay() {
 	
 	var shootAudio = new Audio();
 	shootAudio.src = "sounds/laserBlaster.mp3";
+	shootAudio.volume = 0.0;
 	
 	var explosionAudio = new Audio();
 	explosionAudio.src = "sounds/explosion.wav";
@@ -65,7 +66,8 @@ function GamePlay() {
 						this.x = WIDTH;
 					}
 				}
-			},{
+			},
+            {
 				x:0,
 				y:0,
 				img:bgLayer2,
@@ -76,7 +78,8 @@ function GamePlay() {
 						this.x = WIDTH;
 					}
 				}
-			},{
+			},
+            {
 				x:WIDTH,
 				y:0,
 				img:bgLayer2,
@@ -95,10 +98,10 @@ function GamePlay() {
 			for(var index in this.backgrounds) {
 				current_bg = this.backgrounds[index];
 				context.drawImage(
-					current_bg.img, 
-					current_bg.x, 
+					current_bg.img,
+					current_bg.x,
 					current_bg.y, WIDTH, HEIGHT);
-                
+
 			}
 		},
 		animate:function() {
@@ -192,7 +195,7 @@ function GamePlay() {
 			if(this.health <= 0) {
 				animate();
 				render();
-				alert("Your Score: "+gameScore);
+				//alert("Your Score: "+gameScore);
 				document.location.reload();
 			}
 		},
@@ -245,8 +248,8 @@ function GamePlay() {
 			
 				if(collides(player, each_enemy)) {
 					each_enemy.live = false;
-                    explosionAudio.currentTime = 0;
-					explosionAudio.play();
+                    // explosionAudio.currentTime = 0;
+					// explosionAudio.play();
 					player.onCollision();
 				}
 				
@@ -264,7 +267,7 @@ function GamePlay() {
 						
 						gameScore+=50;
 
-						explosionAudio.play();
+						// explosionAudio.play();
 					}
 				}
 			}
@@ -310,10 +313,10 @@ function GamePlay() {
 				}
 			}
 
-			if(keydown.k && !player.shootIntervalId) {
+			if(keydown.space && !player.shootIntervalId) {
 				player.shoot();
-				player.shootIntervalId = self.setInterval(function(){ player.shoot();},300);
-			}else if(!keydown.k && player.shootIntervalId){				
+				player.shootIntervalId = self.setInterval(function(){ player.shoot();},600);
+			}else if(!keydown.space && player.shootIntervalId){
 				window.clearInterval(player.shootIntervalId);
 				player.shootIntervalId = null;
 			}
