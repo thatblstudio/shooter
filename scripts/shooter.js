@@ -8,9 +8,10 @@ function GamePlay() {
 	var gameScore = 0.00;
 	var gameMinSpeed = 1;
     var gameMaxSpeed = 3;
+    var gameStartTime = jQuery.now();
     
 	var gameMusic = new Audio();
-	gameMusic.src = "sounds/gameMusic.mp3";
+	//gameMusic.src = "sounds/gameMusic.mp3";
 	gameMusic.loop = true;
 	
 	var shootAudio = new Audio();
@@ -113,11 +114,11 @@ function GamePlay() {
 	};
 	
 	function Shoot(x, y) {
-		this.x = x;
-		this.y = y;
-		this.width = 46;
+		this.x = x-100;
+		this.y = y-8;
+		this.width = 184;
 		this.height = 16;
-        this.speed = 8;
+        this.speed = 100;
 		this.active = true;
 		this.img = shootImg;
 		
@@ -140,18 +141,18 @@ function GamePlay() {
 		this.x = x;
 		this.y = y;
         this.speed = speed;
-		this.width = 45/2;
-		this.height = 58/2;
+		this.width = 40;
+		this.height = 100;
 		this.live = true;
-		this.img = enemyImg;
+		//this.img = enemyImg;
         this.draw = function() {
             if(this.live) {
-                context.fillStyle="#DD3500";
+                context.fillStyle="#FF0000";
                 context.lineWidth=2;
-                context.strokeRect(this.x, this.y-20, 40, 7);
-                context.fillRect(this.x, this.y-20, 40, 7);
+                context.strokeRect(this.x, this.y, 40, 100);
+                context.fillRect(this.x, this.y, 40, 100);
 
-                context.drawImage(this.img, this.x,this.y, this.width, this.height);
+                //context.drawImage(this.img, this.x,this.y, this.width, this.height);
             }
         };
         
@@ -160,7 +161,7 @@ function GamePlay() {
 		};
         
 		this.isActive = function() {
-			return this.live &&  (this.x+this.width >= 0);		
+			return this.live &&  (this.x+this.width >= 0);
 		};
 	}
 
@@ -169,23 +170,12 @@ function GamePlay() {
 		y:(HEIGHT/2),
 		width:116/2,
 		height:69/2,
-		health:60,
+		health:1,
 		img:playerImg,
 		shootIntervalId:null,
 		shoots : [],
 		draw:function(){
 			context.drawImage(this.img, this.x, this.y, this.width, this.height);
-			
-			color = "#00DD35";
-
-			if(this.health < 20)
-				color = "#FF3500";
-            
-			context.fillStyle=color;
-			context.lineWidth=2;
-			context.strokeRect(this.x+35, this.y-20, 60, 7);
-			context.fillRect(this.x+35, this.y-20, this.health, 7);
-			
             for(var index in this.shoots) {
 				this.shoots[index].draw();
 			}
@@ -263,9 +253,9 @@ function GamePlay() {
 						each_shoot.active = false;
 						each_enemy.live = false;
 						
-						context.fillText("+50", each_enemy.x, each_enemy.y);
-						
-						gameScore+=50;
+						//context.fillText("+50", each_enemy.x, each_enemy.y);
+						//
+						//gameScore+=50;
 
 						// explosionAudio.play();
 					}
@@ -282,44 +272,43 @@ function GamePlay() {
 	}
 
 	function controller() {
-						
-			if(keydown.w && player.y>=32) {
-				player.y -= 4;
-				if (player.y < 0) {
-					player.y = 0;
-				}
+        if(keydown.w && player.y>=32) {
+            player.y -= 4;
+            if (player.y < 0) {
+                player.y = 0;
+            }
 
-			}
+        }
 
-			if(keydown.s && player.y<=(HEIGHT-player.height)) {
-				player.y += 4;
-				if (player.y > HEIGHT-player.height) {
-					player.y = HEIGHT-player.height;
-				}
+        if(keydown.s && player.y<=(HEIGHT-player.height)) {
+            player.y += 4;
+            if (player.y > HEIGHT-player.height) {
+                player.y = HEIGHT-player.height;
+            }
 
-			}
+        }
 
-			if(keydown.d && player.x<=(WIDTH-player.width)) {
-				player.x += 4;
-				if(player.x > WIDTH-player.width) {
-					player.x = WIDTH-player.width;
-				}
-			}
+        if(keydown.d && player.x<=(WIDTH-player.width)) {
+            player.x += 4;
+            if(player.x > WIDTH-player.width) {
+                player.x = WIDTH-player.width;
+            }
+        }
 
-			if(keydown.a && player.x>=0) {
-				player.x -= 4;
-				if (player.x < 0) {
-					player.x = 0;
-				}
-			}
-
-			if(keydown.space && !player.shootIntervalId) {
-				player.shoot();
-				player.shootIntervalId = self.setInterval(function(){ player.shoot();},600);
-			}else if(!keydown.space && player.shootIntervalId){
-				window.clearInterval(player.shootIntervalId);
-				player.shootIntervalId = null;
-			}
+        if(keydown.a && player.x>=0) {
+            player.x -= 4;
+            if (player.x < 0) {
+                player.x = 0;
+            }
+        }
+        if(keydown.space && !player.shootIntervalId) {
+            player.shoot();
+            player.shootIntervalId = self.setInterval(function(){ player.shoot();},600);
+        }
+        else if(!keydown.space && player.shootIntervalId){
+        	window.clearInterval(player.shootIntervalId);
+        	player.shootIntervalId = null;
+        }
 	}
 
 	function animate() {
@@ -341,11 +330,12 @@ function GamePlay() {
 			return enemy.isActive();		
 		});
 	}
-	
+
 	function generateEnemies() {
-		
-		var randY = (Math.round((Math.random()*(HEIGHT-61))));
-		var speed = (Math.round((Math.random()+gameMinSpeed)*(gameMaxSpeed)));
+        var randY = HEIGHT/2;
+        var speed = 10;
+		//var randY = (Math.round((Math.random()*(HEIGHT-61))));
+		//var speed = (Math.round((Math.random()+gameMinSpeed)*(gameMaxSpeed)));
 		enemies.push(
 				new Enemy(WIDTH, randY, speed)
 			);
@@ -365,7 +355,8 @@ function GamePlay() {
 		
 		context.fillStyle = "#FFF";
 		context.font="bold 16px Arial";
-		context.fillText("score: "+gameScore, 20, 30);
+        var living  = (jQuery.now() - gameStartTime)/1000;
+		context.fillText("Live: "+living+"s", 20, 30);
 	}
 
     var log = {
